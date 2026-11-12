@@ -1,0 +1,59 @@
+/* ================= PAINEL ================= */
+.painel { position: fixed; inset: 0; z-index: 100; background: var(--preto); overflow-y: auto; }
+.painel[hidden] { display: none; }
+.painel-topo { position: sticky; top: 0; z-index: 5; background: var(--grafite); border-bottom: 1px solid var(--linha); }
+.painel-topo .envelope { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding-top: 12px; padding-bottom: 12px; }
+.painel-topo h2 { font-size: 28px; }
+.painel-topo .lado { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.pendencias { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--branco); }
+.abas { display: flex; gap: 6px; padding: 14px 0 0; }
+.abas button { border: 1px solid var(--linha); border-bottom: 0; background: transparent; color: var(--gelo); border-radius: 10px 10px 0 0; padding: 10px 18px; cursor: pointer; font-family: var(--mono); font-weight: 700; font-size: 13px; text-transform: uppercase; letter-spacing: .06em; }
+.abas button[aria-selected="true"] { background: var(--grafite-2); color: var(--branco); }
+.aba { border-top: 1px solid var(--linha); padding: 18px 0 60px; }
+.aba[hidden] { display: none; }
+.filtros-painel { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.filtros-painel input[type="search"] { flex: 1 1 260px; height: 44px; border-radius: 10px; border: 1px solid var(--linha); background: var(--grafite); padding: 0 14px; color: var(--branco); }
+.filtros-painel select, .campo select { height: 44px; border-radius: 10px; border: 1px solid var(--linha); background: var(--grafite); padding: 0 12px; color: var(--branco); }
+.lote { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--grafite-2); border: 1px solid var(--linha); border-radius: 12px; padding: 10px 12px; margin-bottom: 12px; }
+.lote[hidden] { display: none; }
+.tabela-envelope { overflow-x: auto; border: 1px solid var(--linha); border-radius: 12px; }
+table.lista { width: 100%; border-collapse: collapse; font-size: 14px; min-width: 760px; }
+table.lista th, table.lista td { padding: 8px 10px; border-bottom: 1px solid var(--linha); text-align: left; vertical-align: middle; }
+table.lista th { font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--cinza); background: var(--grafite); position: sticky; top: 0; }
+table.lista tr.mudou td { background: rgba(255,255,255,.04); }
+table.lista .mini { width: 52px; height: 52px; border-radius: 8px; background: var(--estudio); position: relative; overflow: hidden; }
+table.lista .mini .miniatura { position: absolute; inset: 3px; background-repeat: no-repeat; }
+table.lista .mini img { width: 100%; height: 100%; object-fit: contain; }
+table.lista select { height: 36px; border-radius: 8px; border: 1px solid var(--linha); background: var(--grafite); color: var(--branco); padding: 0 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; }
+table.lista .sug { font-size: 12px; color: var(--cinza); }
+table.lista input[type="checkbox"] { width: 20px; height: 20px; }
+.paginacao { display: flex; gap: 8px; align-items: center; justify-content: center; padding: 14px 0; font-family: var(--mono); font-size: 13px; }
+.form-painel { display: grid; gap: 16px; }
+.form-painel .linha2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 640px) { .form-painel .linha2 { grid-template-columns: 1fr; } }
+.campo { display: grid; gap: 6px; }
+.campo label, .campo .rotulo { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--cinza); }
+.campo input[type="text"], .campo input[type="tel"], .campo input[type="email"], .campo textarea { width: 100%; background: var(--grafite); border: 1px solid var(--linha); color: var(--branco); padding: 11px 13px; border-radius: 10px; font-size: 16px; }
+.campo textarea { min-height: 80px; resize: vertical; }
+.campo input:focus-visible, .campo textarea:focus-visible, .campo select:focus-visible { outline: none; border-color: var(--branco); box-shadow: 0 0 0 3px rgba(255,255,255,.18); }
+.campo .ajuda { font-size: 13px; color: var(--cinza); }
+.opcoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.opcoes button { font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; background: transparent; color: var(--gelo); border: 1px solid var(--linha); border-radius: 999px; padding: 8px 14px; cursor: pointer; min-height: 36px; }
+.opcoes button[aria-pressed="true"], .opcoes button[aria-checked="true"] { background: var(--branco); color: var(--preto); border-color: var(--branco); }
+dialog.editor { width: min(860px, calc(100% - 24px)); max-height: calc(100% - 24px); padding: 0; border: 1px solid var(--linha); border-radius: 16px; background: var(--preto); }
+.editor .doc-topo { position: sticky; top: 0; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 20px; background: var(--grafite); border-bottom: 1px solid var(--linha); }
+.editor .doc-topo h2 { font-size: 26px; }
+.editor .doc-corpo { padding: 18px 20px 24px; }
+.editor .imagens { display: flex; flex-wrap: wrap; gap: 10px; }
+.editor .imagens figure { margin: 0; width: 110px; display: grid; gap: 6px; }
+.editor .imagens .moldura { width: 110px; height: 110px; border-radius: 10px; background: var(--estudio); display: grid; place-items: center; overflow: hidden; position: relative; }
+.editor .imagens .moldura img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.editor .imagens .moldura .miniatura { position: absolute; inset: 6px; background-repeat: no-repeat; }
+.editor .imagens button { font-size: 12px; }
+.editor .acoes-editor { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; border-top: 1px solid var(--linha); padding-top: 16px; margin-top: 6px; }
+.perigo { border-color: #b8b8bd !important; }
+.confirmar { border: 1px solid var(--branco); border-radius: 12px; padding: 14px; display: grid; gap: 10px; }
+.confirmar[hidden] { display: none; }
+.restrito { max-width: 560px; margin: 12vh auto; padding: 0 20px; display: grid; gap: 14px; text-align: left; }
+.restrito h2 { font-size: 40px; }
+.aviso-painel { border: 1px solid var(--linha); border-left: 3px solid var(--branco); border-radius: 10px; padding: 12px 14px; font-size: 14px; color: #d2d2cf; }

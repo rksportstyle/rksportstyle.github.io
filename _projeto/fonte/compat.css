@@ -1,0 +1,54 @@
+/* ===== Compatibilidade com navegadores antigos (iOS/Safari 12–15, Android antigos) ===== */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-tap-highlight-color: rgba(255,255,255,.08); }
+@media (pointer: coarse) { .busca input, .seletor, input, select, textarea { font-size: 16px; } } /* evita o zoom automático do iPhone ao tocar num campo */
+img { max-width: 100%; }
+
+/* janelas (dialog) em navegadores sem suporte nativo */
+dialog:not([open]) { display: none; }
+.sem-dialog dialog[open] { display: block; position: fixed; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); margin: 0; overflow: auto; -webkit-overflow-scrolling: touch; max-height: calc(100% - 24px); }
+.sem-dialog dialog.gaveta[open] { display: -webkit-box; display: flex; top: 0; bottom: 0; left: 0; right: auto; -webkit-transform: none; transform: none; height: 100%; max-height: none; }
+.sem-dialog dialog.gaveta-filtros[open] { left: auto; right: 0; }
+.sem-dialog .dlg-fundo { position: fixed; top: 0; right: 0; bottom: 0; left: 0; background: rgba(0,0,0,.72); }
+html.dlg-aberto, html.dlg-aberto body { overflow: hidden; }
+@media (max-width: 820px) {
+  .sem-dialog dialog.ficha[open] { top: 0; left: 0; right: 0; bottom: 0; -webkit-transform: none; transform: none; width: 100%; height: 100%; max-height: none; }
+}
+
+/* proporções fixas sem aspect-ratio (Safari < 15) */
+@supports not (aspect-ratio: 1 / 1) {
+  .palco { height: 0; padding-top: 78%; }
+  .bloco .vitrine-bloco { height: 0; padding-top: 62.5%; }
+  .bloco .vitrine-bloco .miniatura { height: 0; padding-top: 46%; }
+  .bloco .vitrine-bloco img.miniatura { height: auto; padding-top: 0; }
+  .bloco .vitrine-bloco.sem img { position: absolute; top: 50%; left: 50%; -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); }
+  .cartao .foto { height: 0; padding-top: 125%; }
+}
+
+/* espaçamento em flexbox sem "gap" (Safari < 14.1): margem à direita, sem mexer em margin-left: auto */
+.sem-gap-flex .barra > *, .sem-gap-flex .topo-nav > *, .sem-gap-flex .sugestoes > *, .sem-gap-flex .numeros > *,
+.sem-gap-flex .res-ferramentas > *, .sem-gap-flex .ficha .miniaturas > *, .sem-gap-flex .rodape-botoes > *, .sem-gap-flex .lado > * { margin-right: 8px; }
+.sem-gap-flex .barra > :last-child, .sem-gap-flex .topo-nav > :last-child, .sem-gap-flex .numeros > :last-child, .sem-gap-flex .res-ferramentas > :last-child, .sem-gap-flex .ficha .miniaturas > :last-child, .sem-gap-flex .lado > :last-child { margin-right: 0; }
+.sem-gap-flex .sugestoes > *, .sem-gap-flex .rodape-botoes > * { margin-bottom: 8px; }
+.sem-gap-flex .opcoes-filtro > *, .sem-gap-flex .filtros-ativos > *, .sem-gap-flex .opcoes > * { margin: 0 8px 8px 0; }
+.sem-gap-flex .ficha .info > * + *, .sem-gap-flex .gaveta-corpo > * + * { margin-top: 14px; }
+.sem-gap-flex .botao > svg, .sem-gap-flex .topo-link > svg { margin-right: 8px; }
+
+/* fotos em JPG (navegadores sem WebP): fundo liso igual ao das fotos */
+.sem-webp .cartao .foto, .sem-webp .bloco .vitrine-bloco, .sem-webp .ficha .vitrine { background: #f0f0ee; }
+
+/* foco visível também onde :focus-visible não existe */
+.bloco:focus { border-color: var(--linha-2); }
+
+/* variáveis com clamp() em navegadores que não conhecem clamp() */
+@supports not (width: clamp(1px, 2px, 3px)) { :root { --gutter: 16px; } @media (min-width: 900px) { :root { --gutter: 32px; } } }
+
+/* aviso de cookies mais compacto no celular */
+@media (max-width: 520px) {
+  .cookies { left: 10px; right: 10px; bottom: 10px; padding: 14px 16px; }
+  .cookies h2 { font-size: 20px; }
+  .cookies p { font-size: 14px; }
+  .cookies .acoes-cookie { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cookies .acoes-cookie .botao { font-size: 14px; padding: 10px 8px; min-height: 44px; }
+  .cookies .acoes-cookie a.botao { grid-column: 1 / -1; border: 0; min-height: 36px; padding: 4px; text-decoration: underline; text-underline-offset: 3px; }
+}

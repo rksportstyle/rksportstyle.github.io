@@ -1,0 +1,109 @@
+/* =====================================================================
+   IDENTIDADE CLARA — fundo branco, texto preto, tons neutros
+   Os nomes das variáveis vêm do tema escuro original:
+   --preto = cor de FUNDO · --branco = cor de DESTAQUE/TEXTO forte
+   ===================================================================== */
+:root {
+  --preto: #ffffff;
+  --grafite: #f5f5f3;
+  --grafite-2: #ececea;
+  --linha: #e6e6e2;
+  --linha-2: #c9c9c4;
+  --cinza: #67676d;
+  --cinza-claro: #3a3a3f;
+  --gelo: #1a1a1c;
+  --branco: #0b0b0c;
+  --estudio: #f3f3f1;
+  --estudio-2: #eaeae7;
+  --suave: cubic-bezier(.16, 1, .3, 1);
+  color-scheme: light;
+}
+body { background: #fff; color: var(--gelo); }
+::selection { background: #0b0b0c; color: #fff; }
+
+/* ---------- botões */
+.botao { background: #0b0b0c; color: #fff; border-color: #0b0b0c; transition: background-color .25s ease, color .25s ease, border-color .25s ease, transform .2s var(--suave), box-shadow .25s ease; }
+.botao:hover { background: #2a2a2e; border-color: #2a2a2e; color: #fff; box-shadow: 0 6px 18px rgba(0,0,0,.12); transform: translateY(-1px); }
+.botao:active { transform: translateY(0) scale(.98); box-shadow: none; }
+.botao.contorno { background: transparent; color: #0b0b0c; border-color: #c9c9c4; }
+.botao.contorno:hover { background: #0b0b0c; color: #fff; border-color: #0b0b0c; }
+.link-seta { color: #3a3a3f; transition: color .2s; }
+.link-seta .seta { transition: transform .25s var(--suave); }
+.link-seta:hover .seta { transform: translateX(3px); }
+
+/* ---------- cabeçalho */
+.topo, .topo.buscando .busca-topo { background: rgba(255,255,255,.9); border-bottom-color: #ececea; }
+@media (max-width: 900px) { .topo.buscando .busca-topo { background: #fff; border-bottom: 1px solid #ececea; } }
+.busca input { background: #f3f3f1; color: #0b0b0c; border: 1px solid transparent; transition: background-color .2s, border-color .2s, box-shadow .2s; }
+.busca input:hover { background: #ececea; }
+.busca input:focus-visible { background: #fff; border-color: #0b0b0c; box-shadow: 0 0 0 3px rgba(0,0,0,.08); }
+.busca input::placeholder { color: #6d6d73; }
+.topo-icone:hover, .topo-icone[aria-expanded="true"] { background: #f0f0ee; }
+.topo-wa { background: #0b0b0c; color: #fff; }
+.topo-wa:hover { background: #2a2a2e; }
+.topo-link { transition: color .2s; }
+.megamenu { background: #fff; box-shadow: 0 24px 48px rgba(0,0,0,.08); }
+@media (prefers-reduced-motion: no-preference) {
+  .topo { animation: desce .6s var(--suave) both; }
+}
+@keyframes desce { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- seções e cards */
+.secao-cabeca h2, h1, h2, h3 { color: #0b0b0c; }
+.aviso-vazio { background: #f6f6f4; border: 1px solid #ececea; color: #3a3a3f; }
+.aviso-vazio b { color: #0b0b0c; }
+.abas-casa button { background: #f3f3f1; color: #3a3a3f; transition: background-color .25s, color .25s; }
+.abas-casa button:hover { background: #e9e9e6; color: #0b0b0c; }
+.abas-casa button[aria-pressed="true"] { background: #0b0b0c; color: #fff; }
+.clube-casa .seletor, .seletor { background-color: #f3f3f1; color: #0b0b0c; }
+.faixa-contato { background: #f6f6f4; border: 1px solid #ececea; }
+.faixa-contato h2 { color: #0b0b0c; }
+
+.cartao .foto { background: linear-gradient(180deg, #f6f6f4, #ededea); transition: background .35s ease, box-shadow .35s ease; }
+.cartao:hover .foto { background: linear-gradient(180deg, #f8f8f6, #efefec); box-shadow: 0 10px 28px rgba(0,0,0,.07); }
+.cartao .miniatura, .cartao img.miniatura { transition: opacity .5s ease, transform .6s var(--suave); }
+.cartao .nome { color: #0b0b0c; }
+.cartao .ver { color: #67676d; }
+.cartao:hover .ver { color: #0b0b0c; }
+.selo.disponivel { background: #0b0b0c; color: #fff; }
+.selo.disponivel::before { background: #fff; }
+.selo.encomenda { background: rgba(255,255,255,.92); color: #3a3a3f; box-shadow: inset 0 0 0 1px #e2e2de; }
+.cartao .n-fotos { background: rgba(255,255,255,.88); color: #4a4a50; }
+.selo.indisponivel { background: #6b6b70; color: #fff; }
+
+/* carregamento discreto: brilho suave enquanto a foto chega */
+.cartao .foto::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%); background-size: 220% 100%; opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .cartao .foto:has(.miniatura:not(.pronta))::after { opacity: 1; animation: brilho 1.4s ease-in-out infinite; }
+}
+@keyframes brilho { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+/* revelar na rolagem (só com JS e sem movimento reduzido) */
+.revelar { opacity: 0; transform: translateY(18px); }
+.revelar.visivel { opacity: 1; transform: none; transition: opacity .7s var(--suave) var(--d, 0ms), transform .8s var(--suave) var(--d, 0ms); }
+@media (prefers-reduced-motion: reduce) {
+  .revelar { opacity: 1; transform: none; }
+}
+
+/* ---------- ficha, gavetas, rodapé */
+.ficha .cta { background: linear-gradient(180deg, rgba(255,255,255,0), #fff 22px); }
+dialog::backdrop { background: rgba(20,20,22,.42); }
+.sem-dialog .dlg-fundo { background: rgba(20,20,22,.42); }
+.pendente { background: #f6f6f4; }
+body { -webkit-tap-highlight-color: rgba(0,0,0,.06); }
+:focus-visible { outline-color: #0b0b0c; }
+.doc .doc-corpo p, .doc .doc-corpo li, .cookies p, .aviso-painel { color: #3a3a3f; }
+
+/* ---------- painel (legibilidade no tema claro) */
+table.lista tr.mudou td { background: #f6f6f4; }
+.campo input:focus-visible, .campo textarea:focus-visible, .campo select:focus-visible { box-shadow: 0 0 0 3px rgba(0,0,0,.08); }
+.estq-conferir, .estq-alertas { color: #7a5600; }
+.estq-campo input[aria-invalid="true"] { border-color: #c62828; }
+.conf-img { background: #f0f0ee; }
+.conf-selo.nao { background: #ececea; color: #3a3a3f; }
+.conf-ok { color: #1b6b35; }
+.conf-item.st-aprovada { border-color: #8fc79f; }
+.conf-item.st-rejeitada { opacity: .8; }
+
+.arvore a[aria-current="page"] { color: #fff; background: #0b0b0c; }
+.arvore a[aria-current="page"] .n { color: #d0d0cc; }
