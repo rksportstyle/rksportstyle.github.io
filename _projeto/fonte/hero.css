@@ -262,3 +262,22 @@ body.painel-aberto .contato-flutuante, body:has(dialog[open]) .contato-flutuante
 .ficha .nav[hidden] { display: none; }
 .aviso-flut a { color: #fff; text-decoration: underline; text-underline-offset: 3px; font-weight: 600; }
 .ficha .miniaturas button[aria-current="true"] { border-color: #0b0b0c; }
+
+/* ---------- menu dentro da visualização da camisa */
+dialog.ficha[open] { display: flex; flex-direction: column; }
+.ficha .corpo { flex: 1 1 auto; min-height: 0; max-height: calc(100vh - 24px - 48px); }
+.ficha-menu { flex: 0 0 auto; display: flex; align-items: center; gap: 14px; height: 48px; padding: 0 18px; border-bottom: 1px solid #ececea; background: #fff; }
+.fm-marca { display: inline-flex; align-items: center; flex-shrink: 0; }
+.fm-marca img { height: 26px; width: auto; }
+.fm-links { display: flex; align-items: center; gap: 2px; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.fm-links::-webkit-scrollbar { display: none; }
+.fm-links a, .fm-links button { flex-shrink: 0; display: inline-flex; align-items: center; height: 34px; padding: 0 10px; border-radius: 999px; border: 0; background: none; font: inherit; font-size: 13.5px; font-weight: 500; color: #3a3a3f; text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .2s, color .2s; }
+.fm-links a:hover, .fm-links button:hover { background: #f0f0ee; color: #0b0b0c; }
+.fm-links a:focus-visible, .fm-links button:focus-visible { outline: 2px solid #0b0b0c; outline-offset: 2px; }
+@media (max-width: 820px) {
+  .ficha .corpo { max-height: none; height: auto; }
+  .ficha-menu { height: 46px; padding: 0 10px; gap: 6px; }
+  .fm-marca img { height: 24px; }
+  .fm-links a, .fm-links button { padding: 0 9px; font-size: 13px; height: 36px; }
+}
+@media (max-width: 420px) { .fm-links a[href="#inicio"] { display: none; } .fm-links a, .fm-links button { padding: 0 8px; } }

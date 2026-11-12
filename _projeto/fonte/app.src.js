@@ -800,8 +800,10 @@
     mostrarFoto();
     var i = listaAtual.indexOf(p);
     atualizarSetas();
+    var jaAberta = ficha.open;
     if (!ficha.open) { focoAntesFicha = document.activeElement; ficha.showModal(); }
-    if (!semHash) definirHash(chavePublica(p), true);
+    /* passar de uma camisa para outra não empilha o histórico: o "voltar" sai da ficha de uma vez */
+    if (!semHash) definirHash(chavePublica(p), !jaAberta);
   }
   function mostrarFoto() {
     var imgs = fichaAtual.imgs || [], img = imgs[fotoAtual], el = $("ficha-img");
@@ -843,9 +845,28 @@
     v.addEventListener("touchend", function (e) { if (x0 === null) return; var dx = e.changedTouches[0].clientX - x0; x0 = null; if (Math.abs(dx) > 45) passo(dx < 0 ? 1 : -1); }, { passive: true });
   })();
   ficha.querySelector("[data-fechar]").addEventListener("click", function () { ficha.close(); });
+  /* menu dentro da ficha: leva direto para outra parte do catálogo */
+  var saidaPeloMenu = false;
+  ficha.querySelector(".ficha-menu").addEventListener("click", function (e) {
+    var a = e.target.closest("a[href^='#']"), c = e.target.closest("[data-ficha-categorias]");
+    if (a) {
+      e.preventDefault();
+      var h = a.getAttribute("href").slice(1);
+      saidaPeloMenu = true; ficha.close();
+      if (h === "inicio") { definirHash("", false); limparEstado(); render(true); }
+      else { definirHash(h, false); lerHash(); window.scrollTo(0, 0); }
+      return;
+    }
+    if (c) {
+      saidaPeloMenu = true; ficha.close();
+      var bt = $("abrir-menu"), bc = $("botao-categorias");
+      setTimeout(function () { if (bt && bt.offsetParent) bt.click(); else if (bc) bc.click(); }, 30);
+    }
+  });
   ficha.addEventListener("click", function (e) { if (e.target === ficha) ficha.close(); });
   ficha.addEventListener("close", function () {
     if (/^#camisa-/.test(location.hash)) definirHash(hashDaVista());
+    if (saidaPeloMenu) { saidaPeloMenu = false; window.scrollTo(0, 0); return; }
     var alvo = fichaAtual && document.querySelector('.cartao[data-id="' + fichaAtual.id + '"] .ver');
     try { (alvo || focoAntesFicha || document.body).focus(); } catch (e) {}
   });
