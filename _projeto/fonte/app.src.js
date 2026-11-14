@@ -72,7 +72,7 @@
   var MSG_PADRAO = "Olá! Tenho interesse na camiseta {nome}. Poderia me passar mais informações?\n{link}";
   normalizar(DADOS);
 
-  var STATUS = { disponivel: "Disponível", encomenda: "Sob encomenda", indisponivel: "Indisponível" };
+  var STATUS = { disponivel: "Pronta entrega", encomenda: "Sob encomenda", indisponivel: "Indisponível" };
   var ORDEM_STATUS = { disponivel: 0, encomenda: 1, indisponivel: 2 };
   var GRUPOS = { brasileiro: "Clube brasileiro", estrangeiro: "Clube estrangeiro", selecao: "Seleção", classificar: "A classificar" };
   var POR_PAGINA = 60;
@@ -207,7 +207,7 @@
       return lista.map(function (t) { return { id: slug(t), nome: t, f: function (p) { return igual(p.clube, t); } }; });
     }
     return [
-      { id: "pronta", nome: "Disponíveis", f: function (p) { return p.status === "disponivel"; }, subs: [] },
+      { id: "pronta", nome: "Pronta entrega", f: function (p) { return p.status === "disponivel"; }, subs: [] },
       { id: "brasil", nome: "Brasil", f: function (p) { return p.grupo === "brasileiro"; },
         subs: [{ id: "brasileirao", nome: "Brasileirão", f: function () { return true; } }].concat(clubes("brasileiro", dBr)) },
       { id: "europa", nome: "Europa", f: function (p) { return p.grupo === "estrangeiro" && em(ligas, p.liga); },
@@ -270,9 +270,8 @@
   var estado = { vista: "inicio", cat: null, sub: null, q: "", disp: "todas", tams: [], ordem: "disp", limite: POR_PAGINA, preset: null };
   function limparEstado() { estado = { vista: "inicio", cat: null, sub: null, q: "", disp: "todas", tams: [], ordem: "disp", limite: POR_PAGINA, preset: null }; }
   var PRESETS = {
-    "pronta-entrega": { titulo: "Camisetas disponíveis", disp: "disponivel", texto: "Em estoque, prontas para entrega." },
+    "pronta-entrega": { titulo: "Pronta entrega", disp: "disponivel", texto: "Em estoque, prontas para entrega imediata." },
     "sob-encomenda": { titulo: "Sob encomenda", disp: "encomenda", texto: "Modelos que você pode encomendar. Prazo e valor são confirmados pelo WhatsApp." },
-    "novidades": { titulo: "Novidades", disp: "todas", texto: "Modelos adicionados recentemente ao catálogo.", f: eNovidade, ordem: "recentes" },
     "todas": { titulo: "Todas as camisetas", disp: "todas", texto: "O catálogo completo da RK." }
   };
 
@@ -437,8 +436,7 @@
   function htmlInicio() {
     var vis = visiveis();
     var disp = ordenar(vis.filter(function (p) { return p.status === "disponivel"; }), "disp");
-    var novas = ordenar(vis.filter(function (p) { return eNovidade(p) && p.status !== "disponivel"; }), "recentes");
-    listaAtual = disp.concat(novas).concat(catalogoCasa().filter(function (p) { return novas.indexOf(p) < 0; }));
+    listaAtual = disp.concat(catalogoCasa());
     var h = '<section class="abertura hero-rk" aria-labelledby="t-abertura">' +
       '<div class="hero-fundo" aria-hidden="true"><span class="hf-textura"></span><span class="hf-velocidade"></span><span class="hf-logo"></span><span class="hf-faixa"></span></div>' +
       '<div class="envelope abertura-grade">' +
@@ -451,14 +449,11 @@
       '<div class="borda-hero" aria-hidden="true"></div>';
     h += '<div class="envelope">';
     /* disponíveis */
-    h += '<section class="secao" id="camisetas" aria-labelledby="t-disp"><div class="secao-cabeca"><div><p class="etiqueta">Pronta entrega</p><h2 id="t-disp">Camisetas disponíveis</h2></div>' +
+    h += '<section class="secao" id="camisetas" aria-labelledby="t-disp"><div class="secao-cabeca"><div><p class="etiqueta">Em estoque, entrega imediata</p><h2 id="t-disp">Pronta entrega</h2></div>' +
       (disp.length ? '<span class="contagem">' + disp.length + (disp.length === 1 ? " modelo" : " modelos") + "</span>" : "") + "</div>";
     h += disp.length ? grade(disp, casa.limDisp, "disp") :
       '<div class="aviso-vazio"><p><b>Estoque a pronta entrega em conferência.</b> Estamos confirmando cada peça antes de publicar. Para saber o que já está disponível, fale com a gente.</p><a class="link-seta" data-wa href="#" target="_blank" rel="noopener noreferrer">Falar no WhatsApp ' + SETA + '<span class="so-leitor"> (abre em nova aba)</span></a></div>';
     h += "</section>";
-    /* novidades (só aparece quando houver) */
-    if (novas.length) h += '<section class="secao" aria-labelledby="t-novas"><div class="secao-cabeca"><div><p class="etiqueta">Recém-chegadas</p><h2 id="t-novas">Novidades</h2></div>' +
-      (novas.length > 4 ? '<a class="link-seta" href="#novidades">Ver todas ' + SETA + "</a>" : "") + "</div>" + grade(novas, 4) + "</section>";
     /* sob encomenda */
     h += '<section class="secao" id="catalogo" aria-labelledby="t-enc"><div class="secao-cabeca"><div><p class="etiqueta">Prazo e valor confirmados pelo WhatsApp</p><h2 id="t-enc">Catálogo sob encomenda</h2></div></div>' +
       '<div id="catalogo-casa">' + htmlCatalogoCasa() + "</div></section>";
@@ -505,7 +500,7 @@
     });
     h += "</nav></div>";
     var c = contagens(r.base);
-    var ops = [["todas", "Todas", r.base.length], ["disponivel", "Disponível", c.disponivel], ["encomenda", "Sob encomenda", c.encomenda]];
+    var ops = [["todas", "Todas", r.base.length], ["disponivel", "Pronta entrega", c.disponivel], ["encomenda", "Sob encomenda", c.encomenda]];
     if (DADOS.config.mostrarIndisponiveis) ops.push(["indisponivel", "Indisponível", c.indisponivel]);
     h += '<div class="filtro-grupo"><span class="etiqueta" id="' + prefixo + '-fd">Disponibilidade</span><div class="opcoes-filtro" role="group" aria-labelledby="' + prefixo + '-fd">' +
       ops.map(function (o) { return '<button type="button" data-disp="' + o[0] + '" aria-pressed="' + (estado.disp === o[0]) + '">' + o[1] + " (" + o[2] + ")</button>"; }).join("") + "</div></div>";
@@ -526,7 +521,7 @@
     var h = '<div class="envelope resultados"><aside class="lateral" aria-label="Filtros">' + htmlFiltros(r, "fl") + "</aside><section aria-labelledby=\"t-res\">" + trilha +
       '<div class="res-cabeca"><div><h1 id="t-res">' + esc(titulo) + '</h1><p class="total">' + r.lista.length + (r.lista.length === 1 ? " camiseta" : " camisetas") + (texto ? " · " + esc(texto) : "") + "</p></div>" +
       '<div class="res-ferramentas"><button type="button" class="botao contorno pequeno botao-filtros" id="abrir-filtros">Filtros' + (nFiltros ? " (" + nFiltros + ")" : "") + "</button>" +
-      '<label class="so-leitor" for="f-ordem">Ordenar</label><select class="seletor" id="f-ordem"><option value="disp"' + (estado.ordem === "disp" ? " selected" : "") + '>Disponíveis primeiro</option><option value="recentes"' + (estado.ordem === "recentes" ? " selected" : "") + '>Mais recentes</option><option value="az"' + (estado.ordem === "az" ? " selected" : "") + ">Nome A–Z</option></select></div></div>";
+      '<label class="so-leitor" for="f-ordem">Ordenar</label><select class="seletor" id="f-ordem"><option value="disp"' + (estado.ordem === "disp" ? " selected" : "") + '>Pronta entrega primeiro</option><option value="recentes"' + (estado.ordem === "recentes" ? " selected" : "") + '>Mais recentes</option><option value="az"' + (estado.ordem === "az" ? " selected" : "") + ">Nome A–Z</option></select></div></div>";
     if (nFiltros || estado.q) {
       h += '<div class="filtros-ativos">' + (estado.q ? '<button type="button" data-tirar="q" aria-label="Remover pesquisa ' + esc(estado.q) + '">' + esc(estado.q) + " ✕</button>" : "") +
         (estado.disp !== "todas" ? '<button type="button" data-tirar="disp" aria-label="Remover filtro ' + STATUS[estado.disp] + '">' + STATUS[estado.disp] + " ✕</button>" : "") +
@@ -574,7 +569,7 @@
   }
   function montarMenus() {
     var vis = visiveis(), c = contagens(vis), nov = vis.filter(eNovidade).length;
-    var atalhos = [["#pronta-entrega", "Disponíveis", c.disponivel], ["#sob-encomenda", "Sob encomenda", c.encomenda], ["#novidades", "Novidades", nov], ["#todas", "Todas as camisetas", vis.length]];
+    var atalhos = [["#pronta-entrega", "Pronta entrega", c.disponivel], ["#sob-encomenda", "Sob encomenda", c.encomenda], ["#todas", "Todas as camisetas", vis.length]];
     function col(ids) {
       return ids.map(function (id) {
         var k = cat(id), n = vis.filter(k.f).length; if (!n) return "";
@@ -1330,7 +1325,7 @@
       '<th scope="col"><input type="checkbox" id="adm-todas" aria-label="Selecionar todas desta página"></th><th scope="col">Foto</th><th scope="col">Código</th><th scope="col">Produto</th><th scope="col">Categoria</th><th scope="col">Disponibilidade</th><th scope="col">Preço</th><th scope="col"><span class="so-leitor">Ações</span></th></tr></thead><tbody>' +
       pagina.map(function (p) {
         return '<tr data-id="' + p.id + '"' + (adm.mudou.has(p.id) ? ' class="mudou"' : "") + '><td><input type="checkbox" data-sel="' + p.id + '" aria-label="Selecionar ' + p.id + '"' + (adm.sel.has(p.id) ? " checked" : "") + "></td>" +
-          '<td><div class="mini">' + htmlMini(p.imgs[0]) + "</div></td><td><code>" + p.id + "</code>" + (p.oculto ? '<div class="sug">Oculta</div>' : "") + (eNovidade(p) ? '<div class="sug">Novidade</div>' : "") + (p.conferir ? '<div class="sug">⚠ Conferir</div>' : "") + "</td>" +
+          '<td><div class="mini">' + htmlMini(p.imgs[0]) + "</div></td><td><code>" + p.id + "</code>" + (p.oculto ? '<div class="sug">Oculta</div>' : "") + (p.conferir ? '<div class="sug">⚠ Conferir</div>' : "") + "</td>" +
           "<td>" + (p.nome || p.clube ? esc(p.nome || p.clube) : "<i>A classificar</i>") + (p.costas ? '<div class="sug">' + esc(p.costas) + "</div>" : "") + (p.grupo === "classificar" && p.sug ? '<div class="sug">Sugestão: ' + esc(p.sug) + "</div>" : "") + "</td>" +
           "<td>" + esc(GRUPOS[p.grupo]) + (p.liga ? '<div class="sug">' + esc(p.liga) + "</div>" : "") + "</td>" +
           '<td><label class="so-leitor" for="st-' + p.id + '">Disponibilidade de ' + p.id + '</label><select id="st-' + p.id + '" data-status="' + p.id + '">' + Object.keys(STATUS).map(function (k) { return '<option value="' + k + '"' + (p.status === k ? " selected" : "") + ">" + STATUS[k] + "</option>"; }).join("") + "</select></td>" +
@@ -1403,8 +1398,7 @@
       '<div class="linha2"><div class="campo"><label for="ed-preco">Preço (R$)</label><input type="text" id="ed-preco" inputmode="decimal" value="' + (typeof p.preco === "number" ? p.preco.toFixed(2).replace(".", ",") : "") + '" placeholder="Deixe vazio para “consulte”"></div>' +
       '<div class="campo"><span class="rotulo" id="r-st">Disponibilidade</span><div class="opcoes" role="radiogroup" aria-labelledby="r-st" id="ed-status">' + Object.keys(STATUS).map(function (k) { return '<button type="button" role="radio" data-st="' + k + '" aria-checked="' + (p.status === k) + '">' + STATUS[k] + "</button>"; }).join("") + "</div></div></div>" +
       '<div class="campo"><label for="ed-qtd">Quantidade em estoque (só aparece no painel)</label><input type="number" min="0" id="ed-qtd" value="' + (p.qtd == null ? "" : p.qtd) + '" style="max-width:160px"></div>' +
-      '<div class="linha2"><label class="chave"><input type="checkbox" id="ed-oculto"' + (p.oculto ? " checked" : "") + '> Ocultar temporariamente do site</label><label class="chave"><input type="checkbox" id="ed-novidade"' + (p.novidade ? " checked" : "") + "> Mostrar em Novidades</label></div>" +
-      (novo ? '<p class="ajuda" style="margin:-6px 0 0;font-size:13px;color:var(--cinza)">Camisas novas aparecem em Novidades automaticamente por ' + DIAS_NOVIDADE + " dias.</p>" : "") +
+      '<div class="linha2"><label class="chave"><input type="checkbox" id="ed-oculto"' + (p.oculto ? " checked" : "") + '> Ocultar temporariamente do site</label></div>' +
       '<div class="campo"><span class="rotulo" id="r-comp">Competições (só se aparecer na camisa)</span><div class="opcoes" role="group" aria-labelledby="r-comp" id="ed-comp">' + opcoes(comps, p.comp, "data-comp") + "</div></div>" +
       '<div class="campo"><label for="ed-obs">Observação pública (opcional)</label><textarea id="ed-obs" maxlength="200">' + esc(p.obs) + "</textarea></div>" +
       '<p class="status-msg" id="ed-msg" role="alert"></p>' +
@@ -1470,7 +1464,7 @@
     p.nome = $("ed-nome").value.trim();
     p.clube = $("ed-clube").value.trim(); p.grupo = $("ed-grupo").value; p.liga = $("ed-liga").value.trim();
     p.modelo = $("ed-modelo").value.trim(); p.tipo = $("ed-tipo").value.trim(); p.costas = $("ed-costas").value.trim(); p.obs = $("ed-obs").value.trim();
-    p.oculto = $("ed-oculto").checked; p.novidade = $("ed-novidade").checked;
+    p.oculto = $("ed-oculto").checked; p.novidade = false;
     var qv = parseInt($("ed-qtd").value, 10); p.qtd = isFinite(qv) && qv >= 0 ? qv : null;
     p.tamanhos = Array.prototype.map.call($("ed-tams").querySelectorAll('[aria-pressed="true"]'), function (b) { return b.getAttribute("data-tam"); });
     p.comp = Array.prototype.map.call($("ed-comp").querySelectorAll('[aria-pressed="true"]'), function (b) { return b.getAttribute("data-comp"); });
